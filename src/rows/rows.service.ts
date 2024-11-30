@@ -25,4 +25,8 @@ export class RowsService {
   remove(id: number) {
     return this.prisma.row.delete({ where: { id } })
   }
+
+  isRowExists(id: number){
+    return this.prisma.row.count({ where: { id }})
+  }
 }

@@ -11,22 +11,23 @@ export class RowsController {
   constructor(private readonly rowsService: RowsService) { }
 
   @Get()
-  //@Logging()
   @ApiOkResponse({ type: RowEntity, isArray: true })
-  getAll() {
+  getAll(@Logging() _req: Request) {
     return this.rowsService.findAll()
   }
 
   @Get(':id')
   //@Logging()
   @ApiOkResponse({ type: RowEntity })
-  getOne(@Param("id") id: number) {
+  getOne(@Param("id") id: number, @Logging() _req: Requestr) {
     return this.rowsService.findOne(id)
   }
 
   @Post('process-data')
-  processData(@Body() data: any) {
-    console.log(data)
-    return data
+  processData(@Body() data: string, @Logging() _req: Request) {
+    const { column, row, value } = JSON.parse(data)
+    if (this.rowsService.isRowExists(row))
+      return this.rowsService.update(row, { [column]: value })
+    else this.rowsService.create({ id: row, [column]: value })
   }
 }
